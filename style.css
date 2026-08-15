@@ -360,6 +360,42 @@ header .sub{ font-size:13px; color:var(--ink-dim); letter-spacing:0.08em; text-t
 .hist-nav{ display:flex; align-items:center; justify-content:flex-end; margin-top:22px; gap:12px; }
 .hist-nav-btns{ display:flex; gap:10px; }
 
+.hist-book-wrap{ position:absolute; top:16px; right:24px; z-index:4; }
+.hist-book-wrap.hidden{ display:none; }
+
+.book-btn{
+  width:44px; height:44px; border-radius:50%; border:1px solid var(--line);
+  background:var(--bg-elev); color:var(--accent); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,0.18);
+}
+.book-btn svg{ width:22px; height:22px; }
+
+.hist-popover{
+  position:absolute; top:52px; right:0; z-index:4;
+  width:min(480px, calc(100vw - 64px)); max-height:min(70vh, 560px); overflow-y:auto;
+  background:var(--bg-elev); border:1px solid var(--line); border-radius:14px;
+  padding:18px 20px; text-align:left; box-shadow:0 16px 40px rgba(0,0,0,0.28);
+  opacity:0; visibility:hidden; transform:translateY(-6px);
+  transition:opacity .15s ease, transform .15s ease, visibility .15s;
+  pointer-events:none;
+}
+.hist-book-wrap:hover .hist-popover,
+.hist-book-wrap:focus-within .hist-popover{
+  opacity:1; visibility:visible; transform:translateY(0); pointer-events:auto;
+}
+.hist-detail-content{ font-size:15px; line-height:1.6; color:var(--ink); padding-right:8px; }
+.hist-detail-content h4{ color:var(--accent); font-size:19px; margin:20px 0 8px; }
+.hist-detail-content h4:first-child{ margin-top:0; }
+.hist-detail-content p{ margin:0 0 10px; }
+.hist-detail-content ul{ margin:0 0 10px; padding-left:22px; }
+.hist-detail-content li{ margin:0 0 6px; }
+.hist-detail-content b{ color:var(--ink); }
+.hist-detail-content blockquote{
+  margin:10px 0; padding:10px 16px; border-left:3px solid var(--accent);
+  background:var(--bg); color:var(--ink-dim); font-style:italic;
+}
+
 .flask-card{ position:relative; display:flex; flex-direction:column; align-items:center; gap:12px; padding:26px 20px; }
 
 .flask-particles{ position:absolute; left:50%; top:50%; width:0; height:0; pointer-events:none; }

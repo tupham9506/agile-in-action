@@ -1116,7 +1116,15 @@ function runNextHistoryBeat(){
   historyBeatIndex++;
 }
 
+let historyNavLocked = false;
+function lockHistoryNav(ms){
+  historyNavLocked = true;
+  setTimeout(()=> { historyNavLocked = false; }, ms);
+}
+
 function handleHistoryScreenClick(){
+  if(historyNavLocked) return;
+  lockHistoryNav(350);
   if(historyBeatIndex < historyBeats.length){
     runNextHistoryBeat();
   } else {
@@ -1137,10 +1145,147 @@ function animateHistoryScene(type, revealAll){
   }
 }
 
+const historyDetailContent = {
+  royce: `
+    <h4>Vì sao Waterfall trở thành mô hình truyền thống?</h4>
+    <p>Vì đây là mô hình sơ khai nhất, và trong ngành xây dựng — nơi nó bắt nguồn — mọi thứ phải chắc chắn ngay từ đầu, bởi chi phí sửa sai quá tốn kém, không thể "đập đi làm lại".</p>
+    <p><b>DoD (Department of Defense):</b> Waterfall từng là tiêu chuẩn phát triển phần mềm chính thức của Bộ Quốc phòng Mỹ.</p>
+    <blockquote>Nhiều người vẫn nghĩ Winston Royce là "cha đẻ" của mô hình Thác nước (Waterfall). Nhưng sự thật lịch sử lại ngược lại: ông vẽ ra Waterfall để cảnh báo về sự nguy hiểm của nó, và chính ông là người đề xuất tư tưởng lặp — phản hồi (Iterative) từ năm 1970, thứ mà ngày nay chúng ta gọi là Agile.</blockquote>
+  `,
+  waterfall: `
+    <h4>Câu hỏi thảo luận</h4>
+    <blockquote>Trước khi sang phần tiếp theo — có ai biết năm 1990 đã xảy ra sự kiện gì quan trọng trong ngành IT, liên quan đến Internet, không?</blockquote>
+  `,
+  independentIdeas: `
+    <h4>1. XP (eXtreme Programming — Lập trình Cực hạn)</h4>
+    <p>Phương pháp tập trung sâu nhất vào kỹ thuật viết code, chất lượng phần mềm và khả năng thích ứng cao, xoay quanh khái niệm User Story.</p>
+    <p><b>User Story</b> (câu chuyện người dùng) là một mô tả ngắn gọn, tự nhiên về một tính năng hoặc yêu cầu phần mềm, viết từ góc nhìn của người dùng cuối hoặc khách hàng, theo mẫu:</p>
+    <blockquote>As a [loại người dùng / vai trò], I want [hành động / tính năng mong muốn], So that [lợi ích / giá trị mang lại].</blockquote>
+    <h4>2. Scrum (khung làm việc Scrum)</h4>
+    <p>Khung quản lý dự án theo các chu kỳ ngắn gọi là Sprint, tập trung vào ba trụ cột: minh bạch, kiểm tra và thích ứng.</p>
+    <h4>Snowbird, Utah</h4>
+    <p>17 người đại diện cho các phương pháp Agile khác nhau gặp nhau tại khu nghỉ dưỡng Snowbird. Cuộc gặp không hề êm đềm: họ tranh cãi nảy lửa với nhau — kể cả về việc nên đặt tên chung là gì — nhưng lại đoàn kết vì có chung một "kẻ thù": mô hình Waterfall.</p>
+    <p><b>Bước đầu tiên</b> họ làm được là gom lại những điểm chung xuất phát từ sự bức xúc đó với Waterfall.</p>
+  `,
+  fourValues: `
+    <h4>Vấn đề 1: Giao tiếp qua trung gian — thảm họa bị ngợp bởi quy trình &amp; công cụ</h4>
+    <p>Các tiêu chuẩn quy trình rườm rà (như CMMI, ISO) cùng hàng loạt công cụ quản lý khiến người ta không còn trao đổi trực tiếp với nhau nữa — có lỗi phải mở ticket, viết báo cáo thay vì nói chuyện thẳng.</p>
+    <p><b>Giải pháp Agile:</b> buộc mọi người ngồi lại và trao đổi trực tiếp với nhau.</p>
+    <p><b>Nhưng nếu chỉ áp dụng một chiều — chỉ có con người mà bỏ hết quy trình:</b></p>
+    <ul>
+      <li>Công việc phụ thuộc hoàn toàn vào con người (một người nghỉ, cả đội không ai biết vì sao)</li>
+      <li>Cách làm việc không nhất quán vì thiếu một quy ước chung</li>
+      <li>Khó mở rộng quy mô đội nhóm</li>
+    </ul>
+    <h4>Vấn đề 2: Tài liệu dày cộp nhưng phần mềm không chạy được</h4>
+    <p>Waterfall quy định phải hoàn tất giai đoạn phân tích và thiết kế mới được viết code. Kết quả là các đội mất từ 6 tháng đến 1 năm chỉ để soạn bộ tài liệu đặc tả yêu cầu (SRS) dài đến hàng nghìn trang.</p>
+    <p><b>Giải pháp Agile:</b> làm ra từng phần phần mềm chạy được để nhìn thấy tận mắt, dùng thử tận tay — sản phẩm chạy tốt quan trọng hơn tài liệu rườm rà.</p>
+    <p><b>Nhưng nếu hoàn toàn bỏ tài liệu:</b></p>
+    <ul>
+      <li>Người mới vào đội không biết hệ thống vận hành ra sao</li>
+      <li>Người cũ nghỉ việc là mất luôn kiến thức tích lũy</li>
+      <li>Không ai còn nhớ vì sao một quyết định kỹ thuật từng được đưa ra</li>
+      <li>Hệ thống ngày càng khó bảo trì sau vài năm</li>
+    </ul>
+    <h4>Vấn đề 3: Cuộc chiến "bên tôi - bên anh" trên bản hợp đồng</h4>
+    <p>Vì sợ rủi ro, khách hàng và công ty phần mềm đều cố chốt một bản hợp đồng thật chặt chẽ ngay từ ngày đầu (giá cố định, phạm vi cố định). Hai bên dần biến thành đối thủ, soi từng câu chữ trong hợp đồng thay vì cùng hướng đến một mục tiêu chung: làm sao để sản phẩm thành công trên thị trường.</p>
+    <p><b>Giải pháp Agile:</b> biến khách hàng từ "đối thủ trên bàn hợp đồng" thành "đồng đội cùng phát triển sản phẩm" — hợp tác với khách hàng quan trọng hơn đàm phán hợp đồng.</p>
+    <p><b>Nhưng nếu chỉ hợp tác mà không có bất kỳ thỏa thuận nào:</b> với khách hàng thật và tiền thật, rủi ro sẽ rất cao — phạm vi dự án dễ nở rộng ngoài tầm kiểm soát, và thiếu cơ sở pháp lý khi xảy ra tranh chấp.</p>
+    <h4>Vấn đề 4: Cái bẫy bám cứng vào kế hoạch đã lỗi thời</h4>
+    <p>Các quản lý dự án thời đó bị ám ảnh bởi biểu đồ Gantt — kế hoạch được lập chi tiết đến từng ngày cho cả hai năm tới. Nhưng ngành công nghệ và Internet thập niên 90 bùng nổ quá nhanh: chỉ sau một năm làm dự án, đối thủ đã ra mắt sản phẩm mới và hành vi người dùng đã thay đổi hoàn toàn.</p>
+    <p><b>Giải pháp Agile:</b> chấp nhận sự thay đổi như một lẽ tự nhiên, coi khả năng đổi hướng là sức mạnh sinh tồn — phản ứng với thay đổi quan trọng hơn bám sát kế hoạch.</p>
+    <p><b>Nhưng nếu chỉ chăm chăm thay đổi mà không có kế hoạch nào:</b> đội dễ mất phương hướng, lãng phí nguồn lực, làm đi làm lại tràn lan và không còn thước đo nào để đánh giá hiệu quả.</p>
+    <h4>Câu hỏi thảo luận</h4>
+    <blockquote>Vậy nếu chỉ giữ lại "vế sau" của mỗi giá trị — mà bỏ hẳn vế đầu — thì có được không? Vì sao?</blockquote>
+  `,
+  twelvePrinciples: `
+    <h4>Cụ thể hóa thành hành động</h4>
+    <p>Nhận thấy 4 giá trị cốt lõi quá ngắn gọn và mang tính triết lý — rất dễ bị hiểu sai hoặc hiểu chung chung — 17 người có mặt hôm đó ngồi viết tiếp 12 nguyên tắc ngay trong cuộc họp. 12 nguyên tắc này chính là cầu nối, đưa triết lý của 4 giá trị vào thực hành cụ thể như Scrum, Kanban hay XP.</p>
+    <p><a href="https://agilemanifesto.org/" target="_blank" rel="noopener">agilemanifesto.org</a></p>
+    <h4>12 nguyên tắc Agile</h4>
+    <ul>
+      <li><b>1. Thỏa mãn khách hàng là ưu tiên hàng đầu</b> — đừng bắt khách hàng chờ 6 tháng hay 1 năm mới thấy sản phẩm; hãy giao từng phần nhỏ nhưng dùng được ngay để họ thấy giá trị sớm.</li>
+      <li><b>2. Chào đón sự thay đổi</b> — thay đổi không phải là kẻ thù hay điều phiền phức, mà là cơ hội để làm ra sản phẩm sát nhu cầu thị trường nhất.</li>
+      <li><b>3. Giao hàng thường xuyên</b> — chia nhỏ chu kỳ phát triển, ví dụ các Sprint 1–2 tuần, để liên tục có bản phát hành mới.</li>
+      <li><b>4. Hợp tác liên tục hằng ngày</b> — xóa bỏ rào cản giữa bên kinh doanh (Product Owner) và bên kỹ thuật (Dev/QA), tránh tình trạng mỗi người hiểu một kiểu.</li>
+      <li><b>5. Xây dựng dự án quanh những cá nhân có động lực</b> — trao quyền và niềm tin thay vì kiểm soát chi tiết từng việc nhỏ; người có động lực sẽ tạo ra sản phẩm tốt.</li>
+      <li><b>6. Giao tiếp trực tiếp (face-to-face)</b> — trao đổi trực tiếp, hoặc một cuộc gọi ngắn, giải quyết vấn đề nhanh hơn nhiều so với viết tài liệu dài dòng hay trao đổi qua email.</li>
+      <li><b>7. Phần mềm chạy tốt là thước đo tiến độ</b> — hoàn thành 90% slide hay tài liệu thiết kế không có ý nghĩa bằng một tính năng thực sự chạy được.</li>
+      <li><b>8. Phát triển bền vững</b> — tránh vắt kiệt sức đội ngũ bằng việc tăng ca liên miên; cần duy trì một nhịp độ làm việc ổn định trong dài hạn.</li>
+      <li><b>9. Liên tục chú trọng kỹ thuật xuất sắc</b> — code sạch, kiến trúc tốt, tự động hóa kiểm thử và giảm nợ kỹ thuật giúp hệ thống dễ nâng cấp, dễ thay đổi về sau.</li>
+      <li><b>10. Sự đơn giản</b> — đừng xây những tính năng phức tạp mà khách hàng chưa cần đến; chỉ tập trung vào những gì thực sự mang lại giá trị lúc này.</li>
+      <li><b>11. Nhóm tự tổ chức</b> — chính nhóm trực tiếp làm sản phẩm mới hiểu rõ nhất nên giải quyết vấn đề kỹ thuật như thế nào, thay vì ngồi chờ chỉ đạo từ cấp trên.</li>
+      <li><b>12. Thường xuyên nhìn lại và điều chỉnh</b> — đây chính là tinh thần của buổi Retrospective; không quy trình nào hoàn hảo ngay từ đầu, nhóm phải liên tục học hỏi và sửa đổi.</li>
+    </ul>
+    <h4>Tóm lược 4 giá trị</h4>
+    <ul>
+      <li><b>Con người &amp; sự tương tác</b> — đặt niềm tin vào con người, để họ tự tổ chức và trao đổi trực tiếp thay vì lệ thuộc vào quy trình.</li>
+      <li><b>Sản phẩm chạy tốt</b> — lấy sản phẩm thực sự chạy được, chứ không phải tài liệu, làm thước đo duy nhất cho tiến độ và chất lượng.</li>
+      <li><b>Hợp tác với khách hàng</b> — đồng hành liên tục cùng khách hàng để giao hàng và điều chỉnh sớm, thay vì chốt cứng mọi thứ ngay từ đầu.</li>
+      <li><b>Phản ứng với thay đổi</b> — giữ mọi thứ đơn giản, nhịp độ ổn định, để có thể thay đổi bất cứ lúc nào mà không kiệt sức.</li>
+    </ul>
+  `,
+  scrumRoles: `
+    <h4>Loại bỏ xung đột lợi ích, tối ưu ba góc nhìn cốt lõi</h4>
+    <p>Để một sản phẩm thành công, dự án luôn cần cân bằng ba yếu tố sống còn. Scrum giao trọn từng yếu tố đó cho một vai trò riêng biệt, không ai chồng chéo lên ai.</p>
+    <p><b>Product Owner (PO)</b> — góc nhìn "làm đúng thứ". Người này tập trung vào giá trị và kinh doanh, luôn trả lời câu hỏi: làm cái gì để đem lại nhiều giá trị nhất cho khách hàng?</p>
+    <ul>
+      <li>Chịu trách nhiệm cao nhất về giá trị của sản phẩm, là tiếng nói đại diện cho khách hàng và người dùng cuối</li>
+      <li>Quản lý Product Backlog</li>
+      <li>Định hình tầm nhìn sản phẩm: sản phẩm giải quyết bài toán gì, lộ trình phát triển ra sao</li>
+      <li>Làm cầu nối và phê duyệt sản phẩm giữa đội ngũ và khách hàng</li>
+    </ul>
+    <p><b>Developers</b> — góc nhìn "làm đúng cách". Họ tập trung vào kỹ thuật và chất lượng, trả lời câu hỏi: xây dựng sản phẩm như thế nào cho chuẩn, chạy tốt và không lỗi?</p>
+    <p><b>Scrum Master (SM)</b> — góc nhìn "làm hợp lý và trơn tru". Người này tập trung vào quy trình và con người, trả lời câu hỏi: làm sao để mọi người phối hợp nhịp nhàng, không bị cản trở và làm việc đúng tinh thần Scrum?</p>
+    <ul>
+      <li>Gỡ bỏ những vướng mắc cản trở đội phát triển</li>
+      <li>Bảo vệ đội — đóng vai trò "lá chắn", không để cấp trên hay các bên ngoài chen thêm việc vào giữa Sprint</li>
+      <li>Đảm bảo các buổi họp Scrum diễn ra đúng giờ, gọn gàng và đạt kết quả</li>
+    </ul>
+  `,
+  scrumEvents: `
+    <h4>1. Sprint — vòng lặp phát triển</h4>
+    <p>Mục tiêu: biến các ý tưởng trên giấy thành một phần sản phẩm thực sự chạy được và có giá trị, gọi là Increment.</p>
+    <h4>2. Sprint Planning — lập kế hoạch Sprint</h4>
+    <p>Trả lời ba câu hỏi: Sprint này có giá trị vì sao (xác định Sprint Goal)? Làm cái gì (chọn việc ưu tiên từ Product Backlog)? Làm như thế nào (Developers bàn cách triển khai kỹ thuật)?</p>
+    <h4>3. Daily Scrum — họp đứng hằng ngày</h4>
+    <p>Cuộc họp ngắn 15 phút, diễn ra vào cùng một khung giờ và địa điểm mỗi ngày, chỉ dành cho Developers: kiểm tra tiến độ hướng tới Sprint Goal và lên kế hoạch cho 24 giờ tiếp theo.</p>
+    <p>Sai lầm thường gặp: biến thành buổi báo cáo, sa đà vào chi tiết kỹ thuật, hoặc thiếu mục tiêu rõ ràng. Giới hạn 15 phút không phải ngẫu nhiên — sau khoảng thời gian đó, mức độ tập trung của con người bắt đầu giảm.</p>
+    <h4>4. Sprint Review — họp demo và sơ kết</h4>
+    <p>Diễn ra vào cuối Sprint, có sự tham dự của các bên liên quan như khách hàng. Đội phát triển demo trực tiếp để nhận phản hồi từ khách hàng, tránh tình trạng thông tin bị "tam sao thất bản" qua nhiều tầng trung gian.</p>
+    <h4>5. Sprint Retrospective — họp cải tiến</h4>
+    <p>Trả lời ba câu hỏi: điều gì đã làm tốt, điều gì chưa tốt, và hành động cải tiến cụ thể nào sẽ áp dụng ngay từ Sprint tới?</p>
+    <p>Sai lầm thường gặp: biến buổi họp thành nơi trút giận, đổ lỗi lẫn nhau, hoặc họp xong rồi bỏ qua không hành động gì.</p>
+  `,
+  scrumArtifacts: `
+    <p>Scrum có đúng ba Artifact — ba đối tượng chứa đựng thông tin then chốt xuyên suốt dự án.</p>
+    <h4>1. Product Backlog</h4>
+    <p>Đi kèm cam kết Product Goal. Do Product Owner sở hữu. Đây là mục tiêu dài hạn của toàn bộ sản phẩm — mọi hạng mục trong Product Backlog đều phải phục vụ mục tiêu này.</p>
+    <h4>2. Sprint Backlog</h4>
+    <p>Đi kèm cam kết Sprint Goal. Do Developers — đội trực tiếp thực thi — sở hữu.</p>
+    <h4>3. Product Increment</h4>
+    <p>Phần tăng trưởng của sản phẩm sau mỗi Sprint, gắn liền với Định nghĩa hoàn thành (Definition of Done).</p>
+  `,
+  scrumPillars: `
+    <p>Nền tảng triết lý của Scrum là chủ nghĩa thực nghiệm (Empiricism) kết hợp tư duy tinh gọn (Lean thinking). Scrum không đặt niềm tin vào một kế hoạch hoàn hảo trên giấy, mà tin vào những gì đang thực sự diễn ra.</p>
+    <ul>
+      <li><b>Minh bạch</b> — mọi thông tin về tiến độ, lỗi, yêu cầu đều phải được công khai để ai trong đội và cấp trên cũng nhìn thấy rõ ràng.</li>
+      <li><b>Kiểm tra</b> — thường xuyên rà soát tiến độ và sản phẩm qua Daily Scrum, Sprint Review, để phát hiện sớm bất thường.</li>
+      <li><b>Thích ứng</b> — khi phát hiện điều gì sai lệch hoặc thị trường thay đổi, đội phải điều chỉnh kế hoạch ngay, không khăng khăng giữ lộ trình cũ.</li>
+    </ul>
+    <p><b>Mối quan hệ giữa ba trụ cột:</b> minh bạch là điều kiện cần đầu tiên — nếu không có minh bạch, việc kiểm tra sẽ dựa trên thông tin sai lệch, và một khi kiểm tra không chính xác thì thích ứng cũng sẽ đi sai hướng.</p>
+    <h4>Câu hỏi thảo luận</h4>
+    <blockquote>Theo mọi người, nếu thiếu một trong các yếu tố trên thì có còn gọi là Scrum không? Hãy chia sẻ về dự án đang làm và đánh giá xem nó có đang thực sự tuân theo Scrum không.</blockquote>
+  `,
+};
+
 function renderHistorySlide(i, revealAll){
   const slide = historySlides[i];
   document.getElementById('histTag').textContent = slide.tag;
   document.getElementById('histScene').innerHTML = buildHistoryScene(slide.scene);
+  const content = historyDetailContent[slide.scene];
+  document.getElementById('histBookWrap').classList.toggle('hidden', !content);
+  document.getElementById('histDetailContent').innerHTML = content || '';
   if(window.lucide) lucide.createIcons();
   animateHistoryScene(slide.scene, revealAll);
 }
@@ -1158,16 +1303,27 @@ function historyBeatBack(){
   }
 }
 
-function handleHistoryScreenKey(e){
-  const screen = document.getElementById('historyScreen');
-  if(screen.classList.contains('hidden')) return;
-  if(e.key === 'ArrowLeft'){
-    historyPrev();
-  } else if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter'){
-    handleHistoryScreenClick();
+function handleGlobalNavKey(e){
+  const isAdvanceKey = e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter';
+  const startScreen = document.getElementById('startScreen');
+  if(!startScreen.classList.contains('hidden')){
+    if(isAdvanceKey){
+      e.preventDefault();
+      handleStartScreenClick();
+    }
+    return;
+  }
+  const historyScreen = document.getElementById('historyScreen');
+  if(!historyScreen.classList.contains('hidden')){
+    if(e.key === 'ArrowLeft'){
+      historyPrev();
+    } else if(isAdvanceKey){
+      e.preventDefault();
+      handleHistoryScreenClick();
+    }
   }
 }
-document.addEventListener('keydown', handleHistoryScreenKey);
+document.addEventListener('keydown', handleGlobalNavKey);
 
 function toggleSprintGoal(btn){
   btn.nextElementSibling.classList.remove('hidden');
@@ -1202,6 +1358,8 @@ function historyNext(){
 }
 
 function historyPrev(){
+  if(historyNavLocked) return;
+  lockHistoryNav(350);
   if(historyBeatIndex > 0){
     historyBeatBack();
   } else if(historyIndex > 0){

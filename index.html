@@ -1,5 +1,5 @@
 <title>Agile Game — Hệ Thống Tài Khoản & Số Dư Ảo</title>
-<link rel="stylesheet" href="style.css?v=20260815190422">
+<link rel="stylesheet" href="style.css?v=20260815193017">
 <script src="libs/gsap.min.js"></script>
 <script src="libs/confetti.min.js"></script>
 <script src="libs/lucide.min.js"></script>
@@ -11,9 +11,21 @@
     <div class="hero-icon"><i data-lucide="sprout"></i></div>
     <h2>Agile Mindset</h2>
     <blockquote class="hero-quote" id="heroQuote" style="opacity:0;">Agile là Mindset về CÁCH PHẢN ỨNG VỚI SỰ THAY ĐỔI và CÁCH TẠO RA GIÁ TRỊ trong một môi trường bất định.</blockquote>
+    <div class="hist-book-wrap" id="startBookWrap" onclick="event.stopPropagation()">
+      <button class="book-btn" aria-label="Xem thêm nội dung"><i data-lucide="book-open"></i></button>
+      <div class="hist-popover">
+        <div class="hist-detail-content">Hiểu gì về agile?</div>
+      </div>
+    </div>
   </div>
 
   <div id="historyScreen" class="hidden start-screen card" onclick="handleHistoryScreenClick()">
+    <div class="hist-book-wrap hidden" id="histBookWrap" onclick="event.stopPropagation()">
+      <button class="book-btn" aria-label="Xem thêm nội dung"><i data-lucide="book-open"></i></button>
+      <div class="hist-popover">
+        <div class="hist-detail-content" id="histDetailContent"></div>
+      </div>
+    </div>
     <div class="hist-tag" id="histTag"></div>
     <div class="hist-scene hist-scene-big" id="histScene"></div>
   </div>
@@ -109,4 +121,4 @@
   </div>
 </div>
 
-<script src="app.js?v=20260815190422"></script>
+<script src="app.js?v=20260815193017"></script>
