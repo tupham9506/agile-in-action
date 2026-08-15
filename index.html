@@ -1,0 +1,118 @@
+<title>Agile Game — Hệ Thống Tài Khoản & Số Dư Ảo</title>
+<link rel="stylesheet" href="style.css">
+<script src="libs/gsap.min.js"></script>
+<script src="libs/confetti.min.js"></script>
+<script src="libs/lucide.min.js"></script>
+
+<div class="wrap">
+  <div class="progress" id="progress"></div>
+
+  <div id="startScreen" class="start-screen hero-screen card" onclick="handleStartScreenClick()" style="cursor:pointer;">
+    <div class="hero-icon"><i data-lucide="sprout"></i></div>
+    <h2>Agile Mindset</h2>
+    <blockquote class="hero-quote" id="heroQuote" style="opacity:0;">Agile là Mindset về CÁCH PHẢN ỨNG VỚI SỰ THAY ĐỔI và CÁCH TẠO RA GIÁ TRỊ trong một môi trường bất định.</blockquote>
+  </div>
+
+  <div id="historyScreen" class="hidden start-screen card">
+    <div class="hist-tag" id="histTag"></div>
+    <div class="hist-scene hist-scene-big" id="histScene" onclick="runNextHistoryBeat()"></div>
+    <div class="hist-nav">
+      <div class="hist-nav-btns">
+        <button class="flask-btn" id="histBackBtn" onclick="historyPrev()">Quay lại</button>
+        <button class="big-btn" id="histNextBtn" onclick="historyNext()">Tiếp theo <i data-lucide="arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="briefScreen" class="hidden start-screen card">
+    <h2><i data-lucide="flask-conical"></i> Phòng thí nghiệm Agile</h2>
+
+    <div class="brief-block">
+      <div class="lab-vials" id="labVials"></div>
+      <div class="lab-grid" id="labGrid"></div>
+    </div>
+
+    <button class="big-btn" onclick="startGame()">Game 2 <i data-lucide="arrow-right"></i></button>
+  </div>
+
+  <div id="gameOverScreen" class="hidden end-screen card critical">
+    <h2><i data-lucide="alert-triangle"></i> Dự án lung lay — Khách hàng mất niềm tin</h2>
+    <div class="end-split">
+      <div class="end-illustration">
+        <div class="day-scene" id="goScene"></div>
+      </div>
+      <div class="end-content">
+        <p id="gameOverText"></p>
+        <div class="summary-list">
+          <div><b>Điều đã xảy ra:</b> đội dành trọn thời gian đầu để hoàn thiện thiết kế chi tiết cho toàn bộ hệ thống trước khi code bất kỳ phần nào.</div>
+          <div><b>Hậu quả:</b> đến ngày thứ 5, khách hàng vẫn chưa được xem bất kỳ kết quả thật nào — chỉ có tài liệu. Họ mất niềm tin dự án đang bị trễ và mất kiểm soát.</div>
+          <div><b>Phản ứng của khách hàng:</b> gửi cảnh báo phạt chậm tiến độ theo hợp đồng, yêu cầu dừng dự án để đánh giá lại — trước khi đội kịp viết dòng code nào chạy được.</div>
+          <div><b>Bài học:</b> Waterfall không sai vì làm ẩu — mà rủi ro nằm ở chỗ khách hàng không có cơ hội nhìn thấy hoặc góp ý cho đến khi mọi thứ đã được lên kế hoạch xong xuôi.</div>
+        </div>
+        <button class="big-btn" onclick="restartGame()">Thử lại với Agile →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameScreen" class="hidden board">
+    <div class="cols">
+      <div class="col-main">
+        <div class="card day-card day-card-split">
+          <div class="day-illustration">
+            <div class="day-tag mono" id="dayTag"></div>
+            <div class="speech-bubble" id="sceneQuote" style="display:none;"></div>
+            <div class="day-scene" id="dayScene"></div>
+            <button class="next-btn" id="nextBtn" onclick="nextDay()">Tiếp theo <i data-lucide="arrow-right"></i></button>
+          </div>
+
+          <div class="day-content">
+            <div class="day-body" id="dayBody" style="display:none;"></div>
+
+            <div class="decision" id="decisionBox" style="display:none;">
+              <div class="decision-q" id="decisionQ"></div>
+              <div class="decision-opts" id="decisionOpts"></div>
+
+              <div class="vote-row other-row" id="otherRow">
+                <span class="vote-label"><i data-lucide="message-circle"></i> Ý kiến khác</span>
+                <span class="vote-count" id="otherVoteCount">0</span>
+                <button class="vote-plus" id="otherVotePlus" onclick="voteOther()" aria-label="Tăng phiếu"><i data-lucide="plus"></i></button>
+              </div>
+
+              <button class="reveal-answer-btn" id="revealAnswerBtn" onclick="revealAnswer()"><i data-lucide="sparkles"></i> Xem đáp án</button>
+            </div>
+
+            <div class="model-choice" id="inlineModelChoice" style="display:none;">
+              <button class="model-btn agile" onclick="pickProjectModel('agile')">
+                <div class="mb-title"><i data-lucide="sprout"></i> Agile</div>
+                <div class="mb-desc">Chia nhỏ thành các Sprint ngắn, demo thường xuyên, thích ứng khi có thay đổi.</div>
+              </button>
+              <button class="model-btn waterfall" onclick="pickProjectModel('waterfall')">
+                <div class="mb-title"><i data-lucide="waves"></i> Waterfall</div>
+                <div class="mb-desc">Lên kế hoạch và thiết kế đầy đủ trước, làm tuần tự từng giai đoạn, chỉ bàn giao khi xong hết.</div>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="endScreen" class="hidden end-screen card">
+    <h2><i data-lucide="rocket"></i> Hệ thống đã sẵn sàng phát hành!</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="n mono" id="finalDays"></div><div class="l">Ngày triển khai</div></div>
+      <div class="stat verdict" id="finalVerdictStat"><div class="n" id="finalVerdict"></div></div>
+    </div>
+    <button class="big-btn" onclick="restartGame()">Xem lại từ đầu</button>
+  </div>
+
+  <div id="outcomeDialog" class="dialog-overlay hidden" onclick="if(event.target===this) closeOutcomeDialog()">
+    <div class="dialog-box">
+      <button class="dialog-close" onclick="closeOutcomeDialog()"><i data-lucide="x"></i></button>
+      <div class="outcome show" id="outcome"></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
