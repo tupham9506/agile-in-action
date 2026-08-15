@@ -1124,21 +1124,50 @@ function handleHistoryScreenClick(){
   }
 }
 
-function animateHistoryScene(type){
+function animateHistoryScene(type, revealAll){
   if(!window.gsap) return;
   historyBeats = buildHistoryBeats(type);
   historyBeatIndex = 0;
-  runNextHistoryBeat();
+  if(revealAll){
+    gsap.globalTimeline.timeScale(60);
+    while(historyBeatIndex < historyBeats.length) runNextHistoryBeat();
+    setTimeout(()=>{ if(window.gsap) gsap.globalTimeline.timeScale(1); }, 60);
+  } else {
+    runNextHistoryBeat();
+  }
 }
 
-function renderHistorySlide(i){
+function renderHistorySlide(i, revealAll){
   const slide = historySlides[i];
   document.getElementById('histTag').textContent = slide.tag;
   document.getElementById('histScene').innerHTML = buildHistoryScene(slide.scene);
-  document.getElementById('histBackBtn').style.visibility = i === 0 ? 'hidden' : 'visible';
   if(window.lucide) lucide.createIcons();
-  animateHistoryScene(slide.scene);
+  animateHistoryScene(slide.scene, revealAll);
 }
+
+function historyBeatBack(){
+  const slide = historySlides[historyIndex];
+  const target = historyBeatIndex - 1;
+  document.getElementById('histScene').innerHTML = buildHistoryScene(slide.scene);
+  historyBeats = buildHistoryBeats(slide.scene);
+  historyBeatIndex = 0;
+  if(window.gsap){
+    gsap.globalTimeline.timeScale(60);
+    while(historyBeatIndex < target) runNextHistoryBeat();
+    setTimeout(()=>{ if(window.gsap) gsap.globalTimeline.timeScale(1); }, 60);
+  }
+}
+
+function handleHistoryScreenKey(e){
+  const screen = document.getElementById('historyScreen');
+  if(screen.classList.contains('hidden')) return;
+  if(e.key === 'ArrowLeft'){
+    historyPrev();
+  } else if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter'){
+    handleHistoryScreenClick();
+  }
+}
+document.addEventListener('keydown', handleHistoryScreenKey);
 
 function toggleSprintGoal(btn){
   btn.nextElementSibling.classList.remove('hidden');
@@ -1173,9 +1202,11 @@ function historyNext(){
 }
 
 function historyPrev(){
-  if(historyIndex > 0){
+  if(historyBeatIndex > 0){
+    historyBeatBack();
+  } else if(historyIndex > 0){
     historyIndex--;
-    renderHistorySlide(historyIndex);
+    renderHistorySlide(historyIndex, true);
   }
 }
 
