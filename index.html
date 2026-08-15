@@ -1,5 +1,5 @@
 <title>Agile Game — Hệ Thống Tài Khoản & Số Dư Ảo</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20260815190042">
 <script src="libs/gsap.min.js"></script>
 <script src="libs/confetti.min.js"></script>
 <script src="libs/lucide.min.js"></script>
@@ -13,13 +13,12 @@
     <blockquote class="hero-quote" id="heroQuote" style="opacity:0;">Agile là Mindset về CÁCH PHẢN ỨNG VỚI SỰ THAY ĐỔI và CÁCH TẠO RA GIÁ TRỊ trong một môi trường bất định.</blockquote>
   </div>
 
-  <div id="historyScreen" class="hidden start-screen card">
+  <div id="historyScreen" class="hidden start-screen card" onclick="handleHistoryScreenClick()">
     <div class="hist-tag" id="histTag"></div>
-    <div class="hist-scene hist-scene-big" id="histScene" onclick="runNextHistoryBeat()"></div>
+    <div class="hist-scene hist-scene-big" id="histScene"></div>
     <div class="hist-nav">
       <div class="hist-nav-btns">
-        <button class="flask-btn" id="histBackBtn" onclick="historyPrev()">Quay lại</button>
-        <button class="big-btn" id="histNextBtn" onclick="historyNext()">Tiếp theo <i data-lucide="arrow-right"></i></button>
+        <button class="flask-btn" id="histBackBtn" onclick="event.stopPropagation(); historyPrev()">Quay lại</button>
       </div>
     </div>
   </div>
@@ -115,4 +114,4 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js?v=20260815190042"></script>

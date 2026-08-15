@@ -1116,6 +1116,14 @@ function runNextHistoryBeat(){
   historyBeatIndex++;
 }
 
+function handleHistoryScreenClick(){
+  if(historyBeatIndex < historyBeats.length){
+    runNextHistoryBeat();
+  } else {
+    historyNext();
+  }
+}
+
 function animateHistoryScene(type){
   if(!window.gsap) return;
   historyBeats = buildHistoryBeats(type);
@@ -1128,12 +1136,6 @@ function renderHistorySlide(i){
   document.getElementById('histTag').textContent = slide.tag;
   document.getElementById('histScene').innerHTML = buildHistoryScene(slide.scene);
   document.getElementById('histBackBtn').style.visibility = i === 0 ? 'hidden' : 'visible';
-  const counter = `(${i + 1}/${historySlides.length})`;
-  const isLast = i === historySlides.length - 1;
-  document.getElementById('histNextBtn').style.visibility = 'visible';
-  document.getElementById('histNextBtn').innerHTML = isLast
-    ? `Vào chơi game <i data-lucide="arrow-right"></i>`
-    : `Tiếp theo ${counter} <i data-lucide="arrow-right"></i>`;
   if(window.lucide) lucide.createIcons();
   animateHistoryScene(slide.scene);
 }
