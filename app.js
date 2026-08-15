@@ -832,7 +832,7 @@ function buildHistoryScene(type){
   } else if(type === 'scrumRoles'){
     const nodes = [
       { x: 240, y: 55, label: 'Product Owner', color: c1 },
-      { x: 125, y: 135, label: 'Developer', color: c4 },
+      { x: 125, y: 135, label: 'Development Team', color: c4 },
       { x: 355, y: 135, label: 'Scrum Master', color: c2 },
     ];
     const pairs = [[0,1],[1,2],[2,0]];
